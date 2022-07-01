@@ -80,7 +80,8 @@
       });
     }
 #if !TARGET_OS_TV
-    [[Appboy sharedInstance] addSdkMetadata:@[ABKSdkMetadataSegment]];
+    NSLog(@"[Braze] [Appboy sharedInstance] addSdkMetadata:%@", @[ABKSdkMetadataSegment]);
+    [[Appboy sharedInstance] addSdkMetadata:@[ABKSdkMetadataSegment]];    
 #endif
   }
   
@@ -103,7 +104,7 @@
   // Ensure that the userID is set and valid (i.e. a non-empty string).
   if (payload.userId != nil && [payload.userId length] != 0) {
     [[Appboy sharedInstance] changeUser:payload.userId];
-    SEGLog(@"[[Appboy sharedInstance] changeUser:%@]", payload.userId);
+    NSLog(@"[Braze] [[Appboy sharedInstance] changeUser:%@]", payload.userId);
   }
   
   if ([payload.traits[@"birthday"] isKindOfClass:[NSString class]]) {
@@ -112,22 +113,22 @@
     [dateFormatter setLocale:enUSPOSIXLocale];
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
     [Appboy sharedInstance].user.dateOfBirth = [dateFormatter dateFromString:payload.traits[@"birthday"]];
-    SEGLog(@"Logged [Appboy sharedInstance].user.dateOfBirth");
+    NSLog(@"[Braze] Logged [Appboy sharedInstance].user.dateOfBirth");
   }
   
   if ([payload.traits[@"email"] isKindOfClass:[NSString class]]) {
     [Appboy sharedInstance].user.email = payload.traits[@"email"];
-    SEGLog(@"Logged [Appboy sharedInstance].user.email");
+    NSLog(@"[Braze] Logged [Appboy sharedInstance].user.email");
   }
   
   if ([payload.traits[@"firstName"] isKindOfClass:[NSString class]]) {
     [Appboy sharedInstance].user.firstName = payload.traits[@"firstName"];
-    SEGLog(@"Logged [Appboy sharedInstance].user.firstName");
+    NSLog(@"[Braze] Logged [Appboy sharedInstance].user.firstName");
   }
   
   if ([payload.traits[@"lastName"] isKindOfClass:[NSString class]]) {
     [Appboy sharedInstance].user.lastName = payload.traits[@"lastName"];
-    SEGLog(@"Logged [Appboy sharedInstance].user.lastName");
+    NSLog(@"[Braze] Logged [Appboy sharedInstance].user.lastName");
   }
   
   // Appboy only accepts "m" or "male" for gender male, and "f" or "female" for gender female, with case insensitive.
@@ -135,28 +136,28 @@
     NSString *gender = payload.traits[@"gender"];
     if ([gender.lowercaseString isEqualToString:@"m"] || [gender.lowercaseString isEqualToString:@"male"]) {
       [[Appboy sharedInstance].user setGender:ABKUserGenderMale];
-      SEGLog(@"[[Appboy sharedInstance].user setGender:]");
+      NSLog(@"[Braze] [[Appboy sharedInstance].user setGender:]");
     } else if ([gender.lowercaseString isEqualToString:@"f"] || [gender.lowercaseString isEqualToString:@"female"]) {
       [[Appboy sharedInstance].user setGender:ABKUserGenderFemale];
-      SEGLog(@"[[Appboy sharedInstance].user setGender:]");
+      NSLog(@"[Braze] [[Appboy sharedInstance].user setGender:]");
     }
   }
   
   if ([payload.traits[@"phone"] isKindOfClass:[NSString class]]) {
     [Appboy sharedInstance].user.phone = payload.traits[@"phone"];
-    SEGLog(@"Logged [Appboy sharedInstance].user.phone");
+    NSLog(@"[Braze] Logged [Appboy sharedInstance].user.phone");
   }
   
   if ([payload.traits[@"address"] isKindOfClass:[NSDictionary class]]) {
     NSDictionary *address = payload.traits[@"address"];
     if ([address[@"city"] isKindOfClass:[NSString class]]) {
       [Appboy sharedInstance].user.homeCity = address[@"city"];
-      SEGLog(@"Logged [Appboy sharedInstance].user.homeCity");
+      NSLog(@"[Braze] Logged [Appboy sharedInstance].user.homeCity");
     }
     
     if ([address[@"country"] isKindOfClass:[NSString class]]) {
       [Appboy sharedInstance].user.country = address[@"country"];
-      SEGLog(@"Logged [Appboy sharedInstance].user.country");
+      NSLog(@"[Braze] Logged [Appboy sharedInstance].user.country");
     }
   }
   
@@ -168,29 +169,29 @@
       id traitValue = payload.traits[key];
       if ([traitValue isKindOfClass:[NSString class]]) {
         [[Appboy sharedInstance].user setCustomAttributeWithKey:key andStringValue:traitValue];
-        SEGLog(@"[[Appboy sharedInstance].user setCustomAttributeWithKey: andStringValue:]");
+        NSLog(@"[Braze] [[Appboy sharedInstance].user setCustomAttributeWithKey: andStringValue:]");
       } else if ([traitValue isKindOfClass:[NSDate class]]) {
         [[Appboy sharedInstance].user setCustomAttributeWithKey:key andDateValue:traitValue];
-        SEGLog(@"[[Appboy sharedInstance].user setCustomAttributeWithKey: andDateValue:]");
+        NSLog(@"[Braze] [[Appboy sharedInstance].user setCustomAttributeWithKey: andDateValue:]");
       } else if ([traitValue isKindOfClass:[NSNumber class]]) {
         if (strcmp([traitValue objCType], [@(YES) objCType]) == 0) {
           [[Appboy sharedInstance].user setCustomAttributeWithKey:key andBOOLValue:[(NSNumber *)traitValue boolValue]];
-          SEGLog(@"[[Appboy sharedInstance].user setCustomAttributeWithKey: andBOOLValue:]");
+          NSLog(@"[Braze] [[Appboy sharedInstance].user setCustomAttributeWithKey: andBOOLValue:]");
         } else if (strcmp([traitValue objCType], @encode(short)) == 0 ||
                    strcmp([traitValue objCType], @encode(int)) == 0 ||
                    strcmp([traitValue objCType], @encode(long)) == 0) {
           [[Appboy sharedInstance].user setCustomAttributeWithKey:key andIntegerValue:[(NSNumber *)traitValue integerValue]];
-          SEGLog(@"[[Appboy sharedInstance].user setCustomAttributeWithKey: andIntegerValue:]");
+          NSLog(@"[Braze] [[Appboy sharedInstance].user setCustomAttributeWithKey: andIntegerValue:]");
         } else if (strcmp([traitValue objCType], @encode(float)) == 0 ||
                    strcmp([traitValue objCType], @encode(double)) == 0) {
           [[Appboy sharedInstance].user setCustomAttributeWithKey:key andDoubleValue:[(NSNumber *)traitValue doubleValue]];
-          SEGLog(@"[[Appboy sharedInstance].user setCustomAttributeWithKey: andDoubleValue:]");
+          NSLog(@"[Braze] [[Appboy sharedInstance].user setCustomAttributeWithKey: andDoubleValue:]");
         } else {
-          SEGLog(@"Could not map NSNumber value to Appboy custom attribute:%@]", traitValue);
+          NSLog(@"[Braze] Could not map NSNumber value to Appboy custom attribute:%@]", traitValue);
         }
       } else if ([traitValue isKindOfClass:[NSArray class]]) {
         [[Appboy sharedInstance].user setCustomAttributeArrayWithKey:key array:traitValue];
-        SEGLog(@"[[Appboy sharedInstance].user setCustomAttributeArrayWithKey: array:]");
+        NSLog(@"[Braze] [[Appboy sharedInstance].user setCustomAttributeArrayWithKey: array:]");
       }
     }
   }
@@ -247,10 +248,10 @@
     } else {
       [[Appboy sharedInstance] logPurchase:payload.event inCurrency:currency atPrice:revenue withQuantity:1];
     }
-    SEGLog(@"[[Appboy sharedInstance] logPurchase: inCurrency: atPrice: withQuantity:]");
+    NSLog(@"[Braze] [[Appboy sharedInstance] logPurchase: inCurrency: atPrice: withQuantity:]");
   } else {
     [[Appboy sharedInstance] logCustomEvent:payload.event withProperties:payload.properties];
-    SEGLog(@"[[Appboy sharedInstance] logCustomEvent: withProperties:]");
+    NSLog(@"[Braze] [[Appboy sharedInstance] logCustomEvent: withProperties:]");
   }
 }
 
@@ -272,7 +273,7 @@
 - (void)flush
 {
   [[Appboy sharedInstance] requestImmediateDataFlush];
-  SEGLog(@"[[Appboy sharedInstance] requestImmediateDataFlush]");
+  NSLog(@"[Braze] [[Appboy sharedInstance] requestImmediateDataFlush]");
 }
 
 #if !TARGET_OS_TV
@@ -281,7 +282,7 @@
 - (void)registeredForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
   [[Appboy sharedInstance] registerDeviceToken:deviceToken];
-  SEGLog(@"[[Appboy sharedInstance] registerDeviceToken:]");
+  NSLog(@"[Braze] [[Appboy sharedInstance] registerDeviceToken:]");
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
@@ -299,7 +300,7 @@
       [[Appboy sharedInstance] registerApplication:[UIApplication sharedApplication] didReceiveRemoteNotification:userInfo];
     });
   }
-  SEGLog(@"[[Appboy sharedInstance] registerApplication: didReceiveRemoteNotification:]");
+  NSLog(@"[Braze] [[Appboy sharedInstance] registerApplication: didReceiveRemoteNotification:]");
 }
 
 - (void)handleActionWithIdentifier:(NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo {
@@ -308,7 +309,7 @@
       [[Appboy sharedInstance] getActionWithIdentifier:identifier forRemoteNotification:userInfo completionHandler:nil];
     });
   }
-  SEGLog(@"[[Appboy sharedInstance] getActionWithIdentifier: forRemoteNotification: completionHandler:]");
+  NSLog(@"[Braze] [[Appboy sharedInstance] getActionWithIdentifier: forRemoteNotification: completionHandler:]");
 }
 #endif
 

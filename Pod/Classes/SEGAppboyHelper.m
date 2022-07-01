@@ -32,12 +32,14 @@
               notificationResponse:(UNNotificationResponse *)response {
   self.center = center;
   self.response = response;
+  NSLog(@"[Braze] saveUserNotificationCenter:(UNUserNotificationCenter *)center notificationResponse:(UNNotificationResponse *)response");
 }
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center
   receivedNotificationResponse:(UNNotificationResponse *)response {
   if (![self logUNPushIfComesInBeforeAppboyInitialized]) {
     dispatch_async(dispatch_get_main_queue(), ^{
+      NSLog(@"[Braze] (void)userNotificationCenter:(UNUserNotificationCenter *)center receivedNotificationResponse:(UNNotificationResponse *)response");
       [[Appboy sharedInstance] userNotificationCenter:center
                        didReceiveNotificationResponse:response
                                 withCompletionHandler:nil];
@@ -50,6 +52,7 @@
     // The existence of a saved notification response indicates that the push was received when
     // Appboy was not initialized yet, and thus the push was received in the inactive state.
     if ([[Appboy sharedInstance] respondsToSelector:@selector(userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:)]) {
+      NSLog(@"[Braze] logUNPushIfComesInBeforeAppboyInitialized -> [[Appboy sharedInstance] userNotificationCenter:self.center...");
       [[Appboy sharedInstance] userNotificationCenter:self.center
                        didReceiveNotificationResponse:self.response
                                 withCompletionHandler:nil];
