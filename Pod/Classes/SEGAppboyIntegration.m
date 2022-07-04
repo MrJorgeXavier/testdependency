@@ -69,14 +69,14 @@
                 inApplication:[UIApplication sharedApplication]
             withLaunchOptions:nil
             withAppboyOptions:mergedAppboyOptions];
-      NSLog([NSString stringWithFormat: @"[Appboy startWithApiKey:%@ , inApplication:withLaunchOptions:withAppboyOptions: %@]",appboyAPIKey, mergedAppboyOptions]);
+      NSLog([NSString stringWithFormat: @"[Braze] isMainThread [Appboy startWithApiKey:%@ , inApplication:withLaunchOptions:withAppboyOptions: %@]",appboyAPIKey, mergedAppboyOptions]);
     } else {
       dispatch_sync(dispatch_get_main_queue(), ^{
         [Appboy startWithApiKey:appboyAPIKey
                   inApplication:[UIApplication sharedApplication]
               withLaunchOptions:nil
               withAppboyOptions:mergedAppboyOptions];
-        NSLog([NSString stringWithFormat: @"[Appboy startWithApiKey:%@ , inApplication:withLaunchOptions:withAppboyOptions: %@]",appboyAPIKey, mergedAppboyOptions]);
+        NSLog([NSString stringWithFormat: @"[Braze] [Appboy startWithApiKey:%@ , inApplication:withLaunchOptions:withAppboyOptions: %@]",appboyAPIKey, mergedAppboyOptions]);
       });
     }
 #if !TARGET_OS_TV
